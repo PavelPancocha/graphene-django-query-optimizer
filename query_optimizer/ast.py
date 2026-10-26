@@ -15,7 +15,14 @@ from graphene.utils.str_converters import to_snake_case
 from graphene_django import DjangoObjectType
 from graphene_django.registry import get_global_registry
 from graphql import FieldNode, FragmentSpreadNode, InlineFragmentNode, SelectionNode
-from graphql.execution.execute import get_field_def
+
+try:
+    from graphql.execution.execute import get_field_def
+except ImportError:  # graphql-core 3.3 removed get_field_def, use GraphQLSchema.get_field instead.
+
+    def get_field_def(schema, parent_type, field_node):
+        return schema.get_field(parent_type, field_node.name.value)
+
 
 from .errors import OptimizerError
 from .settings import optimizer_settings
