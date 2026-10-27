@@ -21,6 +21,8 @@ try:
 except ImportError:  # graphql-core 3.3 removed get_field_def, use GraphQLSchema.get_field instead.
 
     def get_field_def(schema, parent_type, field_node):
+        # Like graphql-core 3.2's get_field_def, this returns None for a field the parent type does not define
+        # (3.2 raised for a union parent instead). Validated documents never select such a field.
         return schema.get_field(parent_type, field_node.name.value)
 
 
